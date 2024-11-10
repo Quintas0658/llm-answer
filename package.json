@@ -88,5 +88,9 @@
     "@langchain/community": {
       "portkey-ai": "1.3.0"
     }
-  }
+  },
+  "main": "index.js",
+  "repository": "git@github.com:Quintas0658/llm-answer.git",
+  "author": "Quintas0658 <resean65@163.com>",
+  "license": "MIT"
 }
