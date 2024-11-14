@@ -29,7 +29,7 @@ interface ContentResult extends SearchResult {
 
 //  Fetch contents of top 10 search results
 export async function get10BlueLinksContents(sources: SearchResult[]): Promise<ContentResult[]> {
-    async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 3000): Promise<Response> {
+    async function fetchWithTimeout(url: string, options: RequestInit = {}, timeout = 800): Promise<Response> {
         try {
             const controller = new AbortController();
             const timeoutId = setTimeout(() => controller.abort(), timeout);
@@ -55,7 +55,7 @@ export async function get10BlueLinksContents(sources: SearchResult[]): Promise<C
     }
     const promises = sources.map(async (source): Promise<ContentResult | null> => {
         try {
-            const response = await fetchWithTimeout(source.link, {}, 3000);
+            const response = await fetchWithTimeout(source.link, {}, 800);
             if (!response.ok) {
                 throw new Error(`Failed to fetch ${source.link}. Status: ${response.status}`);
             }
