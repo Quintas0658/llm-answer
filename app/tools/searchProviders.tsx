@@ -110,10 +110,15 @@ export async function googleSearch(message: string, numberOfPagesToScan = config
 
         return final;
     } catch (error) {
+        // 添加类型检查
+        const errorMessage = error instanceof Error ? error.message : 'Unknown error';
+        const errorStack = error instanceof Error ? error.stack : undefined;
+        const errorType = error instanceof Error ? error.constructor.name : 'Unknown';
+        
         console.error('Search Error:', {
-            error: error.message,
-            stack: error.stack,
-            type: error.constructor.name
+            error: errorMessage,
+            stack: errorStack,
+            type: errorType
         });
         throw error;
     }
