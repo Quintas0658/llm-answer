@@ -45,15 +45,42 @@ export async function braveSearch(message: string, numberOfPagesToScan = config.
 
 export async function googleSearch(message: string, numberOfPagesToScan = config.numberOfPagesToScan): Promise<SearchResult[]> {
     try {
-        const url = `https://www.googleapis.com/customsearch/v1?key=${process.env.GOOGLE_SEARCH_API_KEY}&cx=${process.env.GOOGLE_CX}&q=${encodeURIComponent(message)}&num=${numberOfPagesToScan}`;
+        // 检查环境变量
+        const apiKey = process.env.GOOGLE_SEARCH_API_KEY || 'AIzaSyD680yD2AGpGMiYEGj-Awh89Q0oVvY0qJE';
+        const cx = process.env.GOOGLE_CX || 'd27f43a1d5ef04263';
+        
+        console.log('Environment Check:', {
+            hasApiKey: !!apiKey,
+            hasCx: !!cx,
+            message,
+            numberOfPagesToScan
+        });
+
+        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(message)}&num=${numberOfPagesToScan}`;
+        
         const response = await fetch(url);
         if (!response.ok) {
-            throw new Error(`HTTP error! status: ${response.status}`);
+            const errorText = await response.text();
+            console.error('Google Search API Error:', {
+                status: response.status,
+                statusText: response.statusText,
+                errorDetails: errorText,
+                url: url.replace(apiKey, 'HIDDEN')
+            });
+            throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
         }
+        
         const jsonResponse = await response.json();
+        console.log('Search Response:', {
+            kind: jsonResponse.kind,
+            totalResults: jsonResponse.searchInformation?.totalResults,
+            itemCount: jsonResponse.items?.length
+        });
+        
         if (!jsonResponse.items) {
             throw new Error('Invalid API response format');
         }
+        
         const final = jsonResponse.items.map((result: any): SearchResult => ({
             title: result.title,
             link: result.link,
@@ -61,7 +88,7 @@ export async function googleSearch(message: string, numberOfPagesToScan = config
         }));
         return final;
     } catch (error) {
-        console.error('Error fetching search results:', error);
+        console.error('Error in googleSearch:', error);
         throw error;
     }
 }
