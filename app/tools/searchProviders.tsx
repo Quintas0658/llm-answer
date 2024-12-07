@@ -45,50 +45,76 @@ export async function braveSearch(message: string, numberOfPagesToScan = config.
 
 export async function googleSearch(message: string, numberOfPagesToScan = config.numberOfPagesToScan): Promise<SearchResult[]> {
     try {
-        // 检查环境变量
-        const apiKey = process.env.GOOGLE_SEARCH_API_KEY || 'AIzaSyD680yD2AGpGMiYEGj-Awh89Q0oVvY0qJE';
-        const cx = process.env.GOOGLE_CX || 'd27f43a1d5ef04263';
+        // 记录初始参数
+        console.log('Search Parameters:', { message, numberOfPagesToScan });
         
-        console.log('Environment Check:', {
+        // 检查环境变量
+        const apiKey = process.env.GOOGLE_SEARCH_API_KEY;
+        const cx = process.env.GOOGLE_CX;
+        
+        console.log('Environment Variables Status:', {
             hasApiKey: !!apiKey,
             hasCx: !!cx,
-            message,
-            numberOfPagesToScan
+            apiKeyLength: apiKey?.length,
+            cxLength: cx?.length
         });
 
-        const url = `https://www.googleapis.com/customsearch/v1?key=${apiKey}&cx=${cx}&q=${encodeURIComponent(message)}&num=${numberOfPagesToScan}`;
-        
+        // 如果环境变量不存在，使用硬编码值
+        const finalApiKey = apiKey || 'AIzaSyD680yD2AGpGMiYEGj-Awh89Q0oVvY0qJE';
+        const finalCx = cx || 'd27f43a1d5ef04263';
+
+        const url = `https://www.googleapis.com/customsearch/v1?key=${finalApiKey}&cx=${finalCx}&q=${encodeURIComponent(message)}&num=${numberOfPagesToScan}`;
+        console.log('Request URL:', url.replace(finalApiKey, 'HIDDEN_KEY'));
+
         const response = await fetch(url);
+        console.log('Response Status:', {
+            status: response.status,
+            statusText: response.statusText,
+            headers: Object.fromEntries(response.headers.entries())
+        });
+
         if (!response.ok) {
             const errorText = await response.text();
-            console.error('Google Search API Error:', {
+            console.error('API Error Details:', {
                 status: response.status,
                 statusText: response.statusText,
-                errorDetails: errorText,
-                url: url.replace(apiKey, 'HIDDEN')
+                errorBody: errorText,
+                headers: Object.fromEntries(response.headers.entries())
             });
             throw new Error(`HTTP error! status: ${response.status}, details: ${errorText}`);
         }
-        
+
         const jsonResponse = await response.json();
-        console.log('Search Response:', {
+        console.log('Search Results:', {
             kind: jsonResponse.kind,
             totalResults: jsonResponse.searchInformation?.totalResults,
-            itemCount: jsonResponse.items?.length
+            itemCount: jsonResponse.items?.length,
+            firstItemTitle: jsonResponse.items?.[0]?.title
         });
-        
+
         if (!jsonResponse.items) {
-            throw new Error('Invalid API response format');
+            console.error('Invalid Response Format:', jsonResponse);
+            throw new Error('Invalid API response format - no items found');
         }
-        
+
         const final = jsonResponse.items.map((result: any): SearchResult => ({
             title: result.title,
             link: result.link,
             favicon: result.pagemap?.cse_thumbnail?.[0]?.src || ''
         }));
+
+        console.log('Processed Results:', {
+            count: final.length,
+            firstItem: final[0]
+        });
+
         return final;
     } catch (error) {
-        console.error('Error in googleSearch:', error);
+        console.error('Search Error:', {
+            error: error.message,
+            stack: error.stack,
+            type: error.constructor.name
+        });
         throw error;
     }
 }
