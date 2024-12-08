@@ -62,6 +62,7 @@
     "react-textarea-autosize": "^8.5.3",
     "react-tooltip": "^5.26.4",
     "recharts": "^2.12.4",
+    "rehype-raw": "^7.0.0",
     "request-promise": "^4.2.6",
     "tailwind-merge": "^2.2.1",
     "tailwindcss-animate": "^1.0.7",
