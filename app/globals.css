@@ -211,3 +211,54 @@
   margin-top: -24px;
   clip-path: inset(30px 0 30px 0);
 }
+
+.markdown-container sup {
+    font-size: 0.75em;
+    line-height: 0;
+    position: relative;
+    vertical-align: baseline;
+    top: -0.5em;
+}
+
+.markdown-container sup a {
+    color: #0066cc;
+    text-decoration: none;
+    padding: 0 2px;
+}
+
+.markdown-container sup a:hover {
+    background-color: #f0f0f0;
+    border-radius: 2px;
+}
+
+.markdown-container .references {
+    margin-top: 2em;
+    padding-top: 1em;
+    border-top: 1px solid #eaeaea;
+}
+
+.markdown-container .references a {
+    color: #0066cc;
+    text-decoration: none;
+}
+
+.markdown-container .references a:hover {
+    text-decoration: underline;
+}
+
+/* Dark mode styles */
+.dark .markdown-container sup a {
+    color: #66b3ff;
+}
+
+.dark .markdown-container sup a:hover {
+    background-color: #2a2a2a;
+}
+
+.dark .markdown-container .references {
+    border-top-color: #2a2a2a;
+}
+
+.dark .markdown-container .references a {
+    color: #66b3ff;
+}

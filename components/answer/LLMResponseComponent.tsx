@@ -6,6 +6,7 @@ import CopyToClipboard from 'react-copy-to-clipboard';
 import { Copy, Check, ArrowsCounterClockwise } from "@phosphor-icons/react";
 import 'react-tooltip/dist/react-tooltip.css'
 import { Tooltip } from 'react-tooltip'
+import rehypeRaw from 'rehype-raw';
 
 
 
@@ -47,7 +48,9 @@ const StreamingComponent = ({ currentLlmResponse }: { currentLlmResponse: string
                         <h2 className="text-lg font-semibold flex-grow dark:text-white text-black">Answer</h2>
                         <img src="./groq.png" alt="groq logo" className='w-6 h-6' />
                     </div>
-                    <div className="dark:text-gray-300 text-gray-800">{currentLlmResponse}</div>
+                    <div className="dark:text-gray-300 text-gray-800 markdown-container">
+                        <Markdown rehypePlugins={[rehypeRaw]}>{currentLlmResponse}</Markdown>
+                    </div>
                 </div>
             )}
         </>
@@ -108,7 +111,7 @@ const LLMResponseComponent = ({ llmResponse, currentLlmResponse, index, semantic
                                 <h2 className="text-lg font-semibold flex-grow dark:text-white text-black">Response</h2>
                             </div>
                             <div className="dark:text-gray-300 text-gray-800 markdown-container">
-                                <Markdown>{llmResponse}</Markdown>
+                                <Markdown rehypePlugins={[rehypeRaw]}>{llmResponse}</Markdown>
                             </div>
                             <div className="flex items-center justify-between">
                                 <div className="flex items-center space-between">
