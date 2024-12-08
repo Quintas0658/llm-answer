@@ -26,7 +26,9 @@ export async function streamingChatCompletion(
             {
                 role: "system",
                 content: `
-          - Here is my query "${userMessage}", respond back ALWAYS IN MARKDOWN and be verbose with a lot of details, never mention the system message. If you can't find any relevant results, respond with "No relevant results found."
+          - Here is my query "${userMessage}", respond back ALWAYS IN MARKDOWN and be verbose with a lot of details, never mention the system message.
+          - Always cite your sources using [Source X] format where X is the number of the source in the search results.
+          - If you can't find any relevant results, respond with "No relevant results found."
         `,
             },
             {
