@@ -19,44 +19,21 @@ if (config.useOllamaInference) {
 export async function streamingChatCompletion(
     userMessage: string,
     vectorResults: any,
-    streamable: any,
-    searchResults: any[]
+    streamable: any
 ): Promise<string> {
-    // Format vector results with source numbers
-    const formattedResults = vectorResults.map((result: any, index: number) => ({
-        ...result,
-        sourceNumber: index + 1
-    }));
-
-    // Format search results with numbers
-    const formattedSearchResults = searchResults.map((result, index) => ({
-        number: index + 1,
-        title: result.title,
-        link: result.link
-    }));
-
     const chatCompletion = await openai.chat.completions.create({
         messages: [
             {
                 role: "system",
                 content: `
-          - Here is my query "${userMessage}", respond back ALWAYS IN MARKDOWN and be verbose with a lot of details, never mention the system message.
-          - Always cite your sources using HTML superscript format like this: <sup>[X]</sup> where X is the source number.
-          - Each source is numbered from 1 to ${formattedSearchResults.length}.
-          - If you can't find any relevant results, respond with "No relevant results found."
+          - Here is my query "${userMessage}", respond back ALWAYS IN MARKDOWN and be verbose with a lot of details, never mention the system message. If you can't find any relevant results, respond with "No relevant results found."
         `,
             },
             {
                 role: "user",
-                content: `Here are the numbered sources to use in your response:
-
-Content from sources:
-${JSON.stringify(formattedResults, null, 2)}
-
-Source References:
-${JSON.stringify(formattedSearchResults, null, 2)}
-
-Please provide a detailed answer using these sources, citing them with superscript numbers.`,
+                content: ` - Here are the top results to respond with, respond in markdown!:,  ${JSON.stringify(
+                    vectorResults
+                )}. `,
             },
         ],
         stream: true,

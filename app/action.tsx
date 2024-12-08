@@ -45,7 +45,7 @@ async function myAction(userMessage: string, mentionTool: string | null, logo: s
 
     const html = await get10BlueLinksContents(sources);
     const vectorResults = await processAndVectorizeContent(html, userMessage);
-    const accumulatedLLMResponse = await streamingChatCompletion(userMessage, vectorResults, streamable, sources);
+    const accumulatedLLMResponse = await streamingChatCompletion(userMessage, vectorResults, streamable);
     const followUp = await relevantQuestions(sources, userMessage);
 
     streamable.update({ followUp });
