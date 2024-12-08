@@ -80,6 +80,7 @@ const SearchResultsComponent = ({ searchResults }: { searchResults: SearchResult
                         {visibleResults.map((result, index) => (
                             <div key={`searchResult-${index}`} className="p-2 w-full md:w-1/4">
                                 <div className="flex items-center space-x-2 dark:bg-slate-700 bg-gray-100 p-3 rounded-lg h-full">
+                                <span className="text-sm font-semibold mr-2">[{index + 1}]</span>
                                     {result.favicon.length > 0 && !loadedFavicons[index] && (
                                         <div className="w-5 h-5 dark:bg-slate-600 bg-gray-400 rounded animate-pulse"></div>
                                     )}

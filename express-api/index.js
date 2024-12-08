@@ -109,15 +109,17 @@ app.post('/', async (req, res) => {
   console.log(`10. RAG complete sources and preparing response content`);
   // 21. Prepare the response content
   const chatCompletion = await openai.chat.completions.create({
-    messages:
-      [{
+    messages: [{
         role: "system", content: `
-        - Here is my query "${message}", respond back with an answer that is as long as possible. If you can't find any relevant results, respond with "No relevant results found." 
+        - Here is my query "${message}", respond back with an answer that is as long as possible. 
+        - Always cite your sources using [Source X] format where X is the number of the source.
+        - If you can't find any relevant results, respond with "No relevant results found."
         - ${embedSourcesInLLMResponse ? "Return the sources used in the response with iterable numbered markdown style annotations." : ""}" : ""}`
-      },
-      { role: "user", content: ` - Here are the top results from a similarity search: ${JSON.stringify(sources)}. ` },
-      ], stream: true, model: "mixtral-8x7b-32768"
-  });
+    },
+    { role: "user", content: ` - Here are the top results from a similarity search: ${JSON.stringify(sources)}. ` }],
+    stream: true, 
+    model: "mixtral-8x7b-32768"
+});
   console.log(`11. Sent content to Groq for chat completion.`);
   let responseTotal = "";
   console.log(`12. Streaming response from Groq... \n`);
